@@ -4,6 +4,7 @@ import activemq.backend.models.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -35,6 +36,18 @@ public class TipesController {
         } catch (Exception e) {
             e.printStackTrace();
             return "Failed to send user";
+        }
+
+    }
+
+    @GetMapping("/payment")
+    public String sendPayment(@RequestParam("price") String price) {
+        try {
+            jmsTemplate.convertAndSend("payments", price);
+            return "Payment sent successfully";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Failed to send payment";
         }
 
     }
